@@ -1,4 +1,6 @@
 import string
+from collections import Counter
+import matplotlib.pyplot as plt
 
 # 1. Change the encoding to utf-8 for simpler characters
 text = open("read.txt", encoding="utf-8").read()
@@ -37,7 +39,7 @@ for word in tokenized_words:
     if word not in stop_words:
         final_words.append(word)
 
-print(final_words)
+#print(final_words)
 
 
 # NLP Emotion Algorithm
@@ -48,3 +50,26 @@ print(final_words)
 
 # 2) if word is present -> add emotion to emotion_list
 # 3) Finally count each emotion in the emotion_list
+
+# emotion_list
+emotion_list = []
+for word in final_words:
+    with open("emotions.txt", "r") as file:
+        for line in file:
+            clear_line = line.replace('\n', '').replace(',', '').replace("'", '').strip()
+            emotion_word, emotion = clear_line.split(':')
+
+            # Match found
+            if word == emotion_word.strip():
+                emotion_list.append(emotion.strip())
+
+
+# use Counter to count how many times an emotion is present in the emotions list
+w = Counter(emotion_list)
+
+# plot the graph
+fig, ax1 = plt.subplots()
+ax1.bar(w.keys(), w.values())
+fig.autofmt_xdate()
+plt.savefig("emotions.png")
+plt.show()
